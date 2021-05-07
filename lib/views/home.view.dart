@@ -28,6 +28,10 @@ class _HomePageViewState extends State<HomePageView> {
           UserCard(),
           SizedBox(height: 10),
           NavbarWidget(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 26.0, vertical: 5),
+            child: Text('Obs: Mantenha um item pressionado para edita-lo'),
+          ),
           Expanded(
             child: DespesaListWidget(),
           ),

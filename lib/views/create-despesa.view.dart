@@ -16,12 +16,9 @@ class CreateDespesaView extends StatefulWidget {
 }
 
 class _CreateDespesaViewState extends State<CreateDespesaView> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
   final _formKey = GlobalKey<FormState>();
   final _dateFormat = new DateFormat("dd/MM/yyyy");
-  final _repository = new DespesaRepository();
-
-  String valorAbastecido;
 
   DateTime date = DateTime.now();
 
@@ -118,7 +115,9 @@ class _CreateDespesaViewState extends State<CreateDespesaView> {
                     top: 20,
                   ),
                   child: Text(
-                    _dateFormat.format(date),
+                    _dateFormat.format(despesa.data != null
+                        ? DateTime.parse(despesa.data)
+                        : date),
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
                       fontSize: 34,
@@ -136,10 +135,18 @@ class _CreateDespesaViewState extends State<CreateDespesaView> {
                   padding: EdgeInsets.all(10),
                   child: Container(
                     width: double.infinity,
-                    child: RaisedButton(
-                      onPressed: onSubmit,
-                      child: Text('Salvar'),
-                      color: Theme.of(context).primaryColor,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                            Theme.of(context).primaryColor),
+                      ),
+                      onPressed: () {
+                        onSubmit(_despesaController);
+                      },
+                      child: Text(
+                        'Salvar',
+                        style: TextStyle(color: Colors.black),
+                      ),
                     ),
                   ),
                 )
@@ -151,27 +158,31 @@ class _CreateDespesaViewState extends State<CreateDespesaView> {
     );
   }
 
-  onSubmit() {
+  onSubmit(DespesaController despesaController) {
     if (!_formKey.currentState.validate()) {
       return;
     }
 
     if (despesa.id == null || despesa.id == 0) {
-      create();
+      create(despesaController);
     } else {
       update();
     }
   }
 
-  create() {
+  create(DespesaController despesaController) async {
     widget.despesa.id = null;
     if (widget.despesa.data == null) {
       widget.despesa.data = date.toString();
     }
-    _repository
-        .create(widget.despesa)
-        .then((_) => onSuccess())
-        .catchError((_) => onError());
+
+    var result = await despesaController.insertDespesa(widget.despesa);
+
+    if (result) {
+      onSuccess();
+    } else {
+      onError();
+    }
   }
 
   update() {}

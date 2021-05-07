@@ -63,7 +63,16 @@ abstract class _DespesaController with Store {
   @action
   deleteDespesa(int id) async {
     final repository = new DespesaRepository();
-
     await repository.deleteDespesa(id);
+  }
+
+  @action
+  Future<bool> insertDespesa(Despesa model) async {
+    final repository = new DespesaRepository();
+    return await repository.create(model).then((_) {
+      return true;
+    }).catchError((_) {
+      return false;
+    });
   }
 }

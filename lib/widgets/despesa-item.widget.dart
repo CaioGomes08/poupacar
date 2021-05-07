@@ -5,6 +5,7 @@ import 'package:poupacar/models/despesa.model.dart';
 import 'package:poupacar/views/create-despesa.view.dart';
 import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class DespesaItemWidget extends StatelessWidget {
   Despesa despesa;
   DespesaItemWidget({@required this.despesa});

@@ -1,6 +1,7 @@
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class LoadingWidget extends StatelessWidget {
   bool busy = false;
   Widget child;
