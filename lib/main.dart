@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:poupacar/controllers/despesa.controller.dart';
+import 'package:poupacar/stores/despesa.store.dart';
 import 'package:poupacar/views/home.view.dart';
 import 'package:poupacar/themes/light.theme.dart';
 import 'package:provider/provider.dart';
@@ -14,8 +15,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<DespesaController>.value(
-          value: DespesaController(),
+        Provider<DespesaStore>.value(
+          value: DespesaStore(),
         )
       ],
       child: MaterialApp(

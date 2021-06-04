@@ -86,4 +86,18 @@ class DespesaRepository {
       print(e);
     }
   }
+
+  Future update(int id, Despesa model) async {
+    try {
+      final Database db = await _getDatabase();
+      await db.update(
+        TABLE_NAME,
+        model.toJson(),
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
 }

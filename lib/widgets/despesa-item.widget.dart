@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:poupacar/controllers/despesa.controller.dart';
 import 'package:poupacar/models/despesa.model.dart';
+import 'package:poupacar/stores/despesa.store.dart';
 import 'package:poupacar/views/create-despesa.view.dart';
 import 'package:provider/provider.dart';
 
@@ -14,7 +15,9 @@ class DespesaItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _controller = Provider.of<DespesaController>(context);
+    final _store = Provider.of<DespesaStore>(context);
+    final _controller = new DespesaController(_store);
+
     return Dismissible(
       background: Container(
         color: Colors.red.withOpacity(0.4),

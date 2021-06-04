@@ -1,77 +1,65 @@
-import 'package:mobx/mobx.dart';
 import 'package:poupacar/models/despesa.model.dart';
 import 'package:poupacar/repositories/despesa.repository.dart';
+import 'package:poupacar/stores/despesa.store.dart';
 
-part 'despesa.controller.g.dart';
+class DespesaController {
+  DespesaStore _store;
+  DespesaRepository _repository;
 
-class DespesaController = _DespesaController with _$DespesaController;
-
-abstract class _DespesaController with Store {
-  @observable
-  String currentState = "none";
-
-  @observable
-  bool busy = false;
-
-  @observable
-  ObservableList<Despesa> despesas = new ObservableList<Despesa>();
-
-  @action
-  void changeSelected(String state) {
-    currentState = state;
+  DespesaController(DespesaStore store) {
+    _store = store;
+    _repository = new DespesaRepository();
   }
 
-  @action
   getDespesas(String periodo) async {
-    final repository = new DespesaRepository();
-    busy = true;
-
-    clearDespesas();
+    _store.clearDespesas();
 
     switch (periodo) {
       case 'hoje':
         {
-          changeSelected('hoje');
-          await repository.getDespesasHoje().then((value) {
-            despesas.addAll(value);
-            busy = false;
+          _store.busy = true;
+          _store.changeSelected('hoje');
+          _repository.getDespesasHoje().then((value) {
+            _store.setDespesas(value);
+            _store.busy = false;
           });
+          return;
         }
-        break;
       case 'todos':
         {
-          changeSelected('todos');
-          await repository.getTodasDespesas().then((value) {
-            despesas.addAll(value);
-            busy = false;
+          _store.busy = true;
+          _store.changeSelected('todos');
+          _repository.getTodasDespesas().then((value) {
+            _store.setDespesas(value);
+            _store.busy = false;
           });
+          return;
         }
-        break;
     }
   }
 
-  @action
-  void setDespesas(List<Despesa> despesas) {
-    despesas.addAll(despesas);
-  }
-
-  @action
-  void clearDespesas() {
-    despesas = new ObservableList<Despesa>();
-  }
-
-  @action
   deleteDespesa(int id) async {
-    final repository = new DespesaRepository();
-    await repository.deleteDespesa(id);
+    return await _repository.deleteDespesa(id);
   }
 
-  @action
   Future<bool> insertDespesa(Despesa model) async {
-    final repository = new DespesaRepository();
-    return await repository.create(model).then((_) {
+    _store.busy = true;
+    return await _repository.create(model).then((_) {
+      _store.busy = false;
       return true;
     }).catchError((_) {
+      _store.busy = false;
+      return false;
+    });
+  }
+
+  Future<bool> updateDespesa(int id, Despesa model) async {
+    _store.busy = true;
+    return await _repository.update(id, model).then((_) {
+      _store.busy = false;
+      return true;
+    }).catchError((_) {
+      _store.busy = false;
       return false;
     });
   }

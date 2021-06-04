@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:poupacar/controllers/despesa.controller.dart';
 import 'package:poupacar/models/despesa.model.dart';
 import 'package:poupacar/repositories/despesa.repository.dart';
+import 'package:poupacar/stores/despesa.store.dart';
 import 'package:poupacar/views/home.view.dart';
 import 'package:provider/provider.dart';
 
@@ -54,7 +55,8 @@ class _CreateDespesaViewState extends State<CreateDespesaView> {
 
   @override
   Widget build(BuildContext context) {
-    final _despesaController = Provider.of<DespesaController>(context);
+    final _store = Provider.of<DespesaStore>(context);
+    final _controller = new DespesaController(_store);
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -141,7 +143,7 @@ class _CreateDespesaViewState extends State<CreateDespesaView> {
                             Theme.of(context).primaryColor),
                       ),
                       onPressed: () {
-                        onSubmit(_despesaController);
+                        onSubmit(_controller);
                       },
                       child: Text(
                         'Salvar',
@@ -166,7 +168,7 @@ class _CreateDespesaViewState extends State<CreateDespesaView> {
     if (despesa.id == null || despesa.id == 0) {
       create(despesaController);
     } else {
-      update();
+      update(despesaController);
     }
   }
 
@@ -185,7 +187,20 @@ class _CreateDespesaViewState extends State<CreateDespesaView> {
     }
   }
 
-  update() {}
+  update(DespesaController despesaController) async {
+    if (widget.despesa.data == null) {
+      widget.despesa.data = date.toString();
+    }
+
+    var result = await despesaController.updateDespesa(
+        widget.despesa.id, widget.despesa);
+
+    if (result) {
+      onSuccess();
+    } else {
+      onError();
+    }
+  }
 
   onSuccess() {
     Navigator.push(

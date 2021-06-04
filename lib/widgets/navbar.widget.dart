@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:poupacar/controllers/despesa.controller.dart';
+import 'package:poupacar/stores/despesa.store.dart';
 import 'package:provider/provider.dart';
 
 class NavbarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final despesaController = Provider.of<DespesaController>(context);
+    final _store = Provider.of<DespesaStore>(context);
+    final _controller = new DespesaController(_store);
 
     return Container(
       height: 40,
@@ -21,13 +23,13 @@ class NavbarWidget extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18,
                   color: Theme.of(context).primaryColor,
-                  fontWeight: despesaController.currentState == 'todos'
+                  fontWeight: _store.currentState == 'todos'
                       ? FontWeight.bold
                       : FontWeight.w100,
                 ),
               ),
               onPressed: () {
-                despesaController.getDespesas('todos');
+                _controller.getDespesas('todos');
               },
             );
           }),
@@ -38,13 +40,13 @@ class NavbarWidget extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18,
                   color: Theme.of(context).primaryColor,
-                  fontWeight: despesaController.currentState == 'hoje'
+                  fontWeight: _store.currentState == 'hoje'
                       ? FontWeight.bold
                       : FontWeight.w100,
                 ),
               ),
               onPressed: () {
-                despesaController.getDespesas('hoje');
+                _controller.getDespesas('hoje');
               },
             );
           }),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:poupacar/controllers/despesa.controller.dart';
 import 'package:poupacar/models/despesa.model.dart';
+import 'package:poupacar/stores/despesa.store.dart';
 import 'package:poupacar/views/create-despesa.view.dart';
 import 'package:poupacar/widgets/despesa-list.widget.dart';
 import 'package:poupacar/widgets/navbar.widget.dart';
@@ -15,10 +16,10 @@ class HomePageView extends StatefulWidget {
 class _HomePageViewState extends State<HomePageView> {
   @override
   Widget build(BuildContext context) {
-    final _controller = Provider.of<DespesaController>(context);
+    final _store = Provider.of<DespesaStore>(context);
+    final _controller = new DespesaController(_store);
 
-    if (_controller.currentState == 'none' ||
-        _controller.currentState == 'hoje') {
+    if (_store.currentState == 'none' || _store.currentState == 'hoje') {
       _controller.getDespesas('hoje');
     }
 
